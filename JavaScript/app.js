@@ -1,53 +1,37 @@
-// userProcessor.js
+// userManagement.js
 
-// Function to greet users
-function greetUser(user) {
-  console.log(`Hello, ${user.name}!`); // Error: No check for 'name' property
-}
-const user = { age: 30 }; // Missing 'name'
-greetUser(user);
+// User list management system
 
-// Function to add numbers
-function addNumbers(a, b) {
-  return a + b; // Risk: String concatenation instead of addition
-}
-console.log(addNumbers(5, "10")); // Output: "510"
-
-// Function to calculate area
-function calculateArea(width, height) {
-  return width * height; // Error: Missing 'height' handling
-}
-console.log(calculateArea(10)); // Output: NaN
-
-// Accessing product price
-const product = {
-  name: "Laptop",
-};
-console.log(product.price.toFixed(2)); // Runtime Error: 'price' is undefined
-
-// Function to update status
-const Status = {
-  ACTIVE: "active",
-  INACTIVE: "inactive",
-};
-function updateStatus(status) {
-  if (status === Status.ACTIVEE) { // Typo in 'ACTIVE'
-    console.log("Status is active.");
+// Create a user
+function createUser(data) {
+  if (!data.name || !data.age) {
+    console.log("Invalid user data"); // Validation issue: No type checks
+    return;
   }
+
+  const user = { id: Math.random().toString(36), ...data }; // Risk: `id` is not enforced
+  return user;
 }
-updateStatus("activ"); // Silent failure due to typo
 
-// Function to square a number
-function square(num) {
-  if (num < 0) return "Negative numbers not allowed"; // Returns string
-  return num * num; // Returns number
+// Get a user's age
+function getUserAge(user) {
+  return user.age + " years"; // Risk: `age` might be missing or non-numeric
 }
-const result = square(4);
-console.log(result.toFixed(2)); // Runtime Error: 'toFixed' not available on string
 
-// Array filtering
-const numbers = [1, 2, 3, "four", 5];
-const filtered = numbers.filter((num) => num > 2); // Runtime Error: Comparing string with number
-console.log(filtered);
+// Process a list of users
+function processUsers(users) {
+  return users.filter((user) => user.age >= 18); // Risk: Assuming all users have `age`
+}
 
+// Define some sample users
+const users = [
+  { name: "Alice", age: 25 },
+  { name: "Bob", age: 17 },
+  { name: "Charlie" }, // Missing age
+  "Invalid user", // Invalid data type
+];
 
+const newUser = createUser({ name: "Diana", age: 22 });
+console.log("New User:", newUser);
+
+console.log("All Adults:", processUsers(users)); // Runtime Error: Cannot read property `age`

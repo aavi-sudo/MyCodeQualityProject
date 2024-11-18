@@ -1,37 +1,45 @@
-// studentManagement.js
+// orderProcessing.js
 
-// Function to add a student
-function addStudent(students, student) {
-  if (!student.name || !student.age) {
-    console.log("Invalid student data"); // No type validation
+// Function to create an order
+function createOrder(order) {
+  if (!order.id || !order.amount || !order.items) {
+    console.log("Invalid order data"); // Loosely validated
     return;
   }
-  students.push(student);
+
+  // Order processing logic
+  console.log(`Order ${order.id} created with amount ${order.amount}`);
+  return order;
 }
 
-// Function to calculate average age
-function calculateAverageAge(students) {
-  const totalAge = students.reduce((sum, student) => sum + student.age, 0); // Risk: 'age' might not be a number
-  return totalAge / students.length;
+// Function to calculate total amount
+function calculateTotal(order) {
+  let total = 0;
+  for (const item of order.items) {
+    total += item.price * item.quantity; // Risk: Missing price or quantity will cause NaN
+  }
+  return total;
 }
 
-// Function to get a student by ID
-function getStudentById(students, id) {
-  return students.find((student) => student.id === id); // Risk: 'id' might not exist
+// Function to fetch order by ID
+function getOrderById(orders, id) {
+  return orders.find((order) => order.id === id); // Risk: No type enforcement for 'id'
 }
 
-// Initial students array
-const students = [
-  { id: 1, name: "Alice", age: 20 },
-  { id: 2, name: "Bob", age: "twenty-two" }, // Issue: 'age' is a string
+// Orders array
+const orders = [
+  { id: 1, amount: 100, items: [{ price: 10, quantity: 2 }, { price: 20, quantity: 3 }] },
+  { id: 2, amount: "two hundred", items: [{ price: 50, quantity: 2 }] }, // Invalid amount type
+  { id: 3, items: [{ price: 30, quantity: "three" }] }, // Invalid quantity type
 ];
 
-// Adding a new student
-addStudent(students, { id: 3, name: "Charlie", age: null }); // Issue: 'age' is null
+// Create a new order
+const newOrder = createOrder({ id: 4, amount: null, items: [{ price: 10, quantity: 1 }] });
+console.log("New Order:", newOrder); // Invalid: amount is null
 
-// Calculating average age
-console.log("Average Age:", calculateAverageAge(students)); // Runtime Error: NaN
+// Calculate total for an order
+const total = calculateTotal(orders[1]);
+console.log("Total Amount:", total); // NaN due to invalid amount or quantity
 
-// Getting a student by ID
-console.log(getStudentById(students, 2)); // Works
-console.log(getStudentById(students, "wrong-id")); // Issue: No error, but will not work
+// Fetch an order by ID
+console.log(getOrderById(orders, "two")); // Fails silently: 'id' should be a number
